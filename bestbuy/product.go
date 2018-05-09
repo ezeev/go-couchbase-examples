@@ -9,32 +9,6 @@ import (
 	"gopkg.in/couchbase/gocb.v1"
 )
 
-/*
-
-{
-	"sku_s": "18941592",
-	"id": "18941592",
-	"type_s": "Music",
-	"name_s": "Moot and Lid - CD",
-	"reg_price_f": 13.99,
-	"sale_price_f": 13.99,
-	"discount_f": 0.0,
-	"on_sale_s": "false",
-	"short_description_s": null,
-	"short_description_t": null,
-	"class_s": "COMPACT DISC",
-	"class_t": "COMPACT DISC",
-	"bb_item_id_s": "1548609",
-	"model_number_s": "",
-	"manufacturer_s": "Ictus Records",
-	"manufacturer_t": "Ictus Records",
-	"image_s": "http://images.bestbuy.com/BestBuy_US/images/products/1894/18941592.jpg",
-	"med_image_s": null,
-	"thumb_image_s": "http://images.bestbuy.com/BestBuy_US/images/products/1894/18941592s.jpg",
-	"large_image_s": null, "long_description_t": "", "keywords_txt_en": "Ictus Records Moot and Lid - CD  None COMPACT DISC", "cat_descendent_path": "cat00000|Best Buy/abcat0600000|Movies & Music/cat02001|Music/cat02007|Jazz", "cat_id_ss": ["cat00000", "abcat0600000", "cat02001", "cat02007"]}
-
-*/
-
 type Product struct {
 	Sku               string   `json:"sku"`
 	ID                string   `json:"id"`
@@ -59,7 +33,27 @@ type Product struct {
 	CatIds            []string `json:"cat_ids"`
 }
 
-func LoadProducts(pathToJson string) error {
+func CbConnect(address string, username string, password string) (*gocb.Cluster, error) {
+	cluster, err := gocb.Connect(address)
+	if err != nil {
+		return nil, err
+	}
+	err = cluster.Authenticate(gocb.PasswordAuthenticator{
+		Username: username,
+		Password: password,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return cluster, nil
+}
+
+func CbOpenBucket(name string, cluster *gocb.Cluster) (*gocb.Bucket, error) {
+	bucket, err := cluster.OpenBucket(name, "")
+	return bucket, err
+}
+
+func LoadProductsFromFile(pathToJson string) error {
 
 	// open the bucket
 	cluster, err := gocb.Connect("couchbase://localhost")
@@ -99,16 +93,16 @@ func LoadProducts(pathToJson string) error {
 		}
 	}
 	err = bucket.Close()
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func SaveProduct(product Product, bucket *gocb.Bucket) error {
 	_, err := bucket.Upsert(product.ID, product, 0)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
+}
+
+func GetProduct(ID string, bucket *gocb.Bucket) (*Product, error) {
+	var product Product
+	_, err := bucket.Get(ID, &product)
+	return &product, err
 }

@@ -1,5 +1,5 @@
 
 
 test:
-	go test -v -run TestCatalogSave
+	go test -v -run TestGetProduct
 

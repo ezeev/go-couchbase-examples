@@ -19,18 +19,12 @@ def get_text(e_name, element):
     else:
         return ""
 
-files_path = '/Users/evanpease/Development/javafun/data/product_data/products/*.xml'
-jsonl_path = '/Users/evanpease/Development/go/src/github.com/ezeev/go-couchbase-examples/bestbuy/data/products.jsonl'
+xml_in_path = '/Users/evanpease/Development/go/src/github.com/ezeev/go-couchbase-examples/bestbuy/data/*.xml'
+jsonl_out_path = '/Users/evanpease/Development/go/src/github.com/ezeev/go-couchbase-examples/bestbuy/data/products.jsonl'
 
-f = open(jsonl_path, "w")
+f = open(jsonl_out_path, "w")
 
-#kafka_topic = 'bb-catalog'
-#producer = KafkaProducer(bootstrap_servers=['localhost:9092'])
-# Asynchronous by default
-#future = producer.send('bb-catalog', b'raw_bytes')
-
-
-files = glob.glob(files_path)           # create the list of file
+files = glob.glob(xml_in_path)
 
 doc_count = 0
 for file_name in files:
@@ -79,17 +73,9 @@ for file_name in files:
         catPath = "/".join(catNames)
         doc['cat_descendent_path'] = catPath
         doc['cat_ids'] = catIds
-        # send to producer
-
         s = json.dumps(doc)
-
-        # block to guarantee delivery
-        #future = producer.send(kafka_topic, s.encode('ascii'))
-        #result = future.get(60)
         doc_count = doc_count + 1
         f.write(s + "\n")
-        # save to a file
 
-#producer.flush()
 f.close()
 print("Sent %d docs" % (doc_count))
