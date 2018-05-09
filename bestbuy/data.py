@@ -35,6 +35,7 @@ for file_name in files:
         doc['id'] = doc['sku']
         doc['type'] = product.find('type').text
         doc['name'] = product.find('name').text
+
         reg_price = float(product.find('regularPrice').text)
         sale_price = float(product.find('salePrice').text)
         try:
@@ -71,6 +72,9 @@ for file_name in files:
             catNames.append(name)
             catIds.append(id)
         catPath = "/".join(catNames)
+        if len(catNames) > 3:
+            gameplatform = catNames[3].split("|")[1]
+            doc["platform"] = gameplatform
         doc['cat_descendent_path'] = catPath
         doc['cat_ids'] = catIds
         s = json.dumps(doc)

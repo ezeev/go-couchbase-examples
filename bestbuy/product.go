@@ -31,26 +31,7 @@ type Product struct {
 	Keywords          string   `json:"keywords"`
 	CatDescendentPath string   `json:"cat_descendent_path"`
 	CatIds            []string `json:"cat_ids"`
-}
-
-func CbConnect(address string, username string, password string) (*gocb.Cluster, error) {
-	cluster, err := gocb.Connect(address)
-	if err != nil {
-		return nil, err
-	}
-	err = cluster.Authenticate(gocb.PasswordAuthenticator{
-		Username: username,
-		Password: password,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return cluster, nil
-}
-
-func CbOpenBucket(name string, cluster *gocb.Cluster) (*gocb.Bucket, error) {
-	bucket, err := cluster.OpenBucket(name, "")
-	return bucket, err
+	Platform          string   `json:"platform"`
 }
 
 func LoadProductsFromFile(pathToJson string) error {
