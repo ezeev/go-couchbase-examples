@@ -43,6 +43,36 @@
            "type": "text"
           }
          ]
+        },
+        "platform": {
+         "enabled": true,
+         "dynamic": false,
+         "fields": [
+          {
+           "analyzer": "keyword",
+           "include_in_all": true,
+           "include_term_vectors": true,
+           "index": true,
+           "name": "platform",
+           "store": true,
+           "type": "text"
+          }
+         ]
+        },
+        "sku": {
+         "enabled": true,
+         "dynamic": false,
+         "fields": [
+          {
+           "analyzer": "keyword",
+           "include_in_all": true,
+           "include_term_vectors": true,
+           "index": true,
+           "name": "sku",
+           "store": true,
+           "type": "text"
+          }
+         ]
         }
        }
       },
@@ -62,5 +92,5 @@
      "maxPartitionsPerPIndex": 171,
      "numReplicas": 0
     },
-    "uuid": "62f3210708e4e229"
+    "uuid": "3894a7709dc58983"
    }
