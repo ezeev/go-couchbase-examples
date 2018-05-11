@@ -83,28 +83,44 @@ func TestFilteredSearch(t *testing.T) {
 	for i, hit := range res.Hits() {
 		fmt.Printf("\tHit %d platform: %s\n", i, hit.Fields)
 	}
+	bucket.Close()
 }
 
 func TestCounters(t *testing.T) {
 
-	bucket := mustOpenBucket("test")
-
-	// use KV
-	rows := 10
-	i := 0
-	for i < rows {
-		key := fmt.Sprintf("PROD%d-%d", i, time.Now().Unix())
-		bucket.Insert(key, 0, 0)
-		i++
-	}
-
-	// now increment
-	i = 0
-	for i < rows {
-		key := fmt.Sprintf("PROD%d-%d", i, time.Now().Unix())
-		bucket.Counter(key, 1, 0, 0)
-	}
+	bucket := mustOpenBucket("tests")
 
 	// now scan
+	type event struct {
+		ProductID string `json:"productId"`
+		EpochDay  int    `json:"epochDay"`
+		EpochHour int    `json:"epochHour"`
+		Count     int    `json:"count"`
+	}
+
+	view1 := event{"prod01", 3455, 14, 0}
+	// upsert document
+	bucket.Upsert("event01", view1, 0)
+
+	// now increment the counter
+	bucket.MutateIn("event01", 0, 0).Counter("count", 1, false).Execute()
+
+	var view2 event
+	bucket.Get("event01", &view2)
+
+	t.Logf("Value of counter: %d", view2.Count)
+	if view2.Count != 1 {
+		t.Error("counter field was not incremented!")
+	}
+
+	bucket.Close()
+}
+
+func TestEpochCalculations(t *testing.T) {
+	now := time.Now().Unix()
+	day := now / 86400
+	hour := now / 3600
+
+	t.Logf("The day is %d and the hour is %d", day, hour)
 
 }
