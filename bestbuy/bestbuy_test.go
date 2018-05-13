@@ -11,16 +11,29 @@ import (
 )
 
 func mustOpenBucket(name string) *gocb.Bucket {
-	cluster, err := bestbuy.CbConnect("couchbase://localhost", "evan", "password")
+	cluster, err := bestbuy.OpenCluster("couchbase://localhost", "evan", "password")
 	if err != nil {
 		panic(err)
 	}
 
-	bucket, err := bestbuy.CbOpenBucket(name, cluster)
+	bucket, err := bestbuy.OpenBucket(name, cluster)
 	if err != nil {
 		panic(err)
 	}
 	return bucket
+}
+
+func TestPostSearch(t *testing.T) {
+	// start server
+	server := bestbuy.Server{}
+	go server.Start("8081")
+	time.Sleep(1 * time.Second)
+	// sleep for one second
+
+	t.Log("Started server on port 8081")
+	server.Shutdown()
+	t.Log("Closed server on port 8081")
+
 }
 
 func TestGetProduct(t *testing.T) {
@@ -122,5 +135,17 @@ func TestEpochCalculations(t *testing.T) {
 	hour := now / 3600
 
 	t.Logf("The day is %d and the hour is %d", day, hour)
+
+}
+
+func TestEventID(t *testing.T) {
+
+	event := bestbuy.QueryTrackEvent{}
+	event.Count = 0
+	event.Hour = 177
+	event.Day = 2345
+	event.Query = "Red Dead"
+
+	t.Logf("ID: %s", event.ID())
 
 }

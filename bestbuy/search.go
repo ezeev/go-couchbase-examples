@@ -5,7 +5,7 @@ import (
 	"gopkg.in/couchbase/gocb.v1/cbft"
 )
 
-func Search(index string, q string, bucket *gocb.Bucket) (gocb.SearchResults, error) {
+func Search(index string, q string, bucket *gocb.Bucket) (SearchResponse, error) {
 	//query := gocb.NewSearchQuery(index, cbft.NewMatchQuery(q))
 	query := gocb.NewSearchQuery(index, cbft.NewQueryStringQuery(q))
 
@@ -14,7 +14,29 @@ func Search(index string, q string, bucket *gocb.Bucket) (gocb.SearchResults, er
 	query.Fields("platform")
 	res, err := bucket.ExecuteSearchQuery(query)
 	if err != nil {
-		return nil, err
+		return SearchResponse{}, err
 	}
-	return res, nil
+
+	searchResponse := SearchResponse{
+		Query:     q,
+		Hits:      res.Hits(),
+		Facets:    res.Facets(),
+		Errors:    res.Errors(),
+		Status:    res.Status(),
+		TotalHits: res.TotalHits(),
+		MaxScore:  res.MaxScore(),
+		TookMs:    res.Took().Seconds() * 1000,
+	}
+	return searchResponse, nil
+}
+
+type SearchResponse struct {
+	Query     string                            `json:"query"`
+	Hits      []gocb.SearchResultHit            `json:"hits"`
+	Facets    map[string]gocb.SearchResultFacet `json:"facets"`
+	Errors    []string                          `json:"errors"`
+	Status    gocb.SearchResultStatus           `json:"status"`
+	TotalHits int                               `json:"totalHits"`
+	MaxScore  float64                           `json:"maxScore"`
+	TookMs    float64                           `json:"tookMs"`
 }
