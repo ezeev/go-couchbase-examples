@@ -21,6 +21,8 @@ type Server struct {
 
 func (s *Server) Start(port string) {
 	s.Router = mux.NewRouter()
+
+	// setup routes
 	s.Router.HandleFunc("/api/search", s.restEndpoint(s.handleSearch()))
 
 	s.HttpServer = &http.Server{
@@ -44,9 +46,6 @@ func (s *Server) Start(port string) {
 	go s.processEvents()
 
 	log.Fatal(s.HttpServer.ListenAndServe())
-
-	// close connections
-	s.Shutdown()
 
 }
 

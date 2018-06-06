@@ -38,15 +38,6 @@ func TestPostSearch(t *testing.T) {
 
 func TestGetProduct(t *testing.T) {
 
-	/*cluster, err := bestbuy.CbConnect("couchbase://localhost", "evan", "password")
-	if err != nil {
-		t.Error(err)
-	}
-
-	bucket, err := bestbuy.CbOpenBucket("bb-catalog", cluster)
-	if err != nil {
-		t.Error(err)
-	}*/
 	bucket := mustOpenBucket("bb-catalog")
 
 	prod1, err := bestbuy.GetProduct("1184298", bucket)
@@ -69,7 +60,8 @@ func TestBoostSearch(t *testing.T) {
 
 	bucket.Close()
 
-	if res.Hits()[0].Id != "3650503" {
+	//if res.Hits()[0].Id != "3650503" {
+	if res.Hits[0].Id
 		t.Errorf("Expected id 3650503 to be in position. Got %s instead\n", res.Hits()[0])
 	}
 
