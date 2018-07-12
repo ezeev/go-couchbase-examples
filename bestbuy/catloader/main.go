@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	err := bestbuy.LoadProductsFromFile("../data/products.jsonl")
+	err := bestbuy.LoadProductsFromFile("/Users/evanpease/Development/datasets/product_data.jsonl")
 	if err != nil {
 		log.Println(err)
 	}

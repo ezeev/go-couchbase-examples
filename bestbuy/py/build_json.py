@@ -19,8 +19,8 @@ def get_text(e_name, element):
     else:
         return ""
 
-xml_in_path = '/Users/evanpease/Development/go/src/github.com/ezeev/go-couchbase-examples/bestbuy/data/*.xml'
-jsonl_out_path = '/Users/evanpease/Development/go/src/github.com/ezeev/go-couchbase-examples/bestbuy/data/products.jsonl'
+xml_in_path = '/Users/evanpease/Development/datasets/product_data/products/*.xml'
+jsonl_out_path = '/Users/evanpease/Development/datasets/product_data.jsonl'
 
 f = open(jsonl_out_path, "w")
 
@@ -60,6 +60,9 @@ for file_name in files:
         # keywords
         kw = str(doc['manufacturer']) + ' ' + str(doc['name']) + ' ' + str(doc['model_number']) + ' ' +str(doc['short_description']) + ' ' + str(doc['class'])
         doc['keywords'] = kw
+
+        # add a type field
+        doc['type'] = 'product'
 
         # traverse categories
         catPath = product.find('categoryPath')

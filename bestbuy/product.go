@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 
 	"gopkg.in/couchbase/gocb.v1"
+	gocbcore "gopkg.in/couchbase/gocbcore.v7"
 )
 
 type Product struct {
@@ -34,18 +35,43 @@ type Product struct {
 	Platform          string   `json:"platform"`
 }
 
+func GetProducts(prodIds []string, prodBucket *gocb.Bucket) []*Product {
+	products := make([]*Product, len(prodIds))
+	for i, key := range prodIds {
+		//var prod Product
+		prod, err := GetProduct(key, prodBucket) //prodBucket.Get(key, &prod)
+		if _, ok := err.(*gocbcore.KvError); ok {
+			prod.Name = "Product Not Found"
+		}
+		products[i] = prod
+	}
+	return products
+}
+
+func GetProductsFromHits(hits []gocb.SearchResultHit, prodBucket *gocb.Bucket) []*Product {
+	products := make([]*Product, len(hits))
+	for i, key := range hits {
+		prod, err := GetProduct(key.Id, prodBucket)
+		if _, ok := err.(*gocbcore.KvError); ok {
+			prod.Name = "Product Not Found"
+		}
+		products[i] = prod
+	}
+	return products
+}
+
 func LoadProductsFromFile(pathToJson string) error {
 
 	// open the bucket
 	cluster, err := gocb.Connect("couchbase://localhost")
 	cluster.Authenticate(gocb.PasswordAuthenticator{
-		Username: "evan",
-		Password: "password",
+		Username: "admin",
+		Password: "password123",
 	})
 	if err != nil {
 		return err
 	}
-	bucket, err := cluster.OpenBucket("bb-catalog", "")
+	bucket, err := cluster.OpenBucket("products", "")
 	if err != nil {
 		return err
 	}
