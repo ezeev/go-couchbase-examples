@@ -12,6 +12,8 @@
 5. Start the best buy server
 6. Run the simulation
 
+At the end of this document there's a section on setting up Analytics with example queries.
+
 **Before beginning, go get this repository:**
 
 ```
@@ -105,6 +107,28 @@ Now you should be able to access the demo here:
 http://localhost:8081/app/search?q=ipad
 
 
+### 6. Run the Simulation
+
+Before running, we have to sort the training data by timestamp.
+
+Edit lines 3 and 4 in `py/sort_clicks.py` to reflect where your training data is located:
+
+```
+train_path = '/Users/evanpease/Development/datasets/train.csv'
+dest_path = '/Users/evanpease/Development/datasets/all_sorted.csv'
+```
+
+`all_sorted.csv` will be created by this program, so just make sure the path is correct.
+
+Now, we can finally run the simulation.
+
+There is a program in `py/sim.py` that will load the `all_sorted.csv` file from step 1 and replay the search and click history against the BestBuy server. This will populate the tracking bucket over time.
+
+Just make sure line 8 points to where your csv file lives:
+
+```
+clicks_path = '/Users/evanpease/Development/datasets/all_sorted.csv'
+```
 
 
 ## Analytics (Optional)

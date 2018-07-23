@@ -5,7 +5,7 @@ from datetime import datetime
 from functools import reduce
 import numpy as np
 
-clicks_path = dest_path = '/Users/evanpease/Development/datasets/all_sorted.csv'
+clicks_path = '/Users/evanpease/Development/datasets/all_sorted.csv'
 api_base = 'http://localhost:8081/api'
 
 columns = ['user','sku', 'category','query','click_time','query_time']
