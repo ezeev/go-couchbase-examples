@@ -1,10 +1,45 @@
 
 {{ template "header.html"}}
 
-    <img src="{{ .LargeImage }}" />
-    <h1>{{ .Name }}</h1>
+
+<div class="container product_section_container">
+    <div class="row">
+        <div class="col product_section clearfix">
+
+            <!-- Breadcrumbs -->
+
+            <div class="breadcrumbs d-flex flex-row align-items-center">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li class="active"><a href="index.html"><i class="fa fa-angle-right" aria-hidden="true"></i>Search</a></li>
+                    <li><i class="fa fa-angle-right" aria-hidden="true"></i>{{ .Name }}</li>
+                </ul>
+            </div>
+
+
+    
+
+    <div class="row">
+        <div class="col-4 align-items-center"><img src="{{ .LargeImage }}" width="300px" /></div>
+        <div class="col-8"><h2>{{ .Name }}</h2>
+            <b>{{ .ShortDescription }}</b> <br /><br />
+            <p>
+                {{ .LongDescription }}
+            </p>
+            <ul>
+                <li><b>Brand</b>: {{.Manufacturer}}</li>
+                <li><b>Model</b>: {{.ModelNumber}}</li>
+                <li><b>Platform</b>: {{.Platform}}</li>
+            </ul>
+
+        </div>
+    </div>
+
     <p>
-        {{ .LongDescription }}
+        
     </p>
 
+</div>
+</div>
+</div>
 {{ template "footer.html"}}

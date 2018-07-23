@@ -1,6 +1,50 @@
 # Best Buy Example Setup Steps
 
+**WORK IN PROGRESS**
+
+
+## High Level Steps
+
 1. Download best buy Kaggle dataset 
+2. Transform the product data (from xml to json documents)
+3. Create the buckets and full text indexes
+4. Load the catalog
+5. Start the best buy server
+6. Run the simulation
+
+Before beginning, get this repository:
+
+```
+go get github.com/ezeev/go-couchbase-examples/bestbuy
+cd $GOPATH/src/github.com/ezeev/go-couchbase-examples/bestbuy
+EXPORT BBPATH=
+```
+
+### 1. Download the BestBuy Dataset
+
+Download the dataset here:
+
+https://www.kaggle.com/c/acm-sf-chapter-hackathon-big
+
+The files we care about are `product_data.tar.gz` and `train.csv`.
+
+Download them to a location you will remember. Extract `product_data.tar.gz`.
+
+### 2. Transform the Product Data
+
+The BestBuy product data is in XML (thanks, 2011). In `bestbuy/py` there is a script named `build_json.py`. This will read the XML and parse it into one, giant jsonl file (line delimited json documents). We will need this to lead the data later.
+
+1. Edit `py/build_json.py`
+2. Towards the top, modify these 2 lines to point to where you extracted the product data:
+
+```
+xml_in_path = '/Users/evanpease/Development/datasets/product_data/products/*.xml'
+jsonl_out_path = '/Users/evanpease/Development/datasets/product_data.jsonl'
+```
+
+
+# OLD README
+
 
 
 
