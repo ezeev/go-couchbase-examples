@@ -61,62 +61,59 @@ Setup the FTS indexes using the following screenshots:
 ![](img/clicksfts.png)
 
 
+### 4. Load the Catalog
 
-# OLD README
-
-
-
-
-## Index Creation
-
-1. Go to "Search" -> "Create New Index" from admin interface
-2. Name the index "productsfts" and set the bucket to "products"
-3. Under Type Mappings, uncheck the "default" option. This will index everything in our bucket if not unchedked (we don't want that)
-4. Add a new type mapping, set type = "products"
-5. Add a child mapping
-
-## N1QL Setup
+There's a simple program in `bestbuy/catloader` that will read the `.jsonl` file created in step 2 and load it into the products bucket.
 
 ```
-CREATE PRIMARY INDEX ix1 ON tracking;
-
-select * from tracking where query = 'TESTING'
+go run catloader/main.go PATH_TO_BB_DATA/product_data.jsonl
 ```
 
+Replace `PATH_TO_BB_DATA` with the path to your jsonl file.
 
-# Observations
+While it is running, check the `products` bucket to make sure documents are being added.
 
+### 5. Start the BestBuy Server
 
-### Counter Operations
+Before running, you will need to modify one Go file (TODO: load config form yaml instead):
 
-Incrementing counters on a field within a document is 5x slower than a KV counter:
+In `bestbuy/exec/main.go`:
+
+```go
+	conf := bestbuy.Config{
+		APIPort:                 8081,
+		CouchbaseUserName:       "admin",
+		CouchbasePassword:       "password123",
+		CouchbaseClusterAddress: "couchbase://localhost",
+		AssetsBaseUrl:           "http://localhost:8082",
+		ProductsFTSIndexName:    "productsfts",
+		TrackingFTSIndexName:    "clicksfts",
+	}
+```
+
+Modify `CouchbaseUserName`, `CouchbasePassword` and `CouchbaseClusterAddress` if you are not running on localhost.
+
+Then, finally start the server:
 
 ```
-BenchmarkDocCounter-8   	       2	 518864463 ns/op
-BenchmarkKVCounter-8    	      10	 101966877 ns/op
+cd exec
+go run main.go
 ```
 
-### Primary Indexes for N1QL
+Now you should be able to access the demo here:
 
-They allow you to query any feild in the document at the cost of indexing everything. In practice, it is better to only index the fields
-you need to run queries on.
-
-### Boost Queries
+http://localhost:8081/app/search?q=ipad
 
 
-### Stemming
 
-If you want stemming to work you have to set it up at query time also:
 
-`matchQuery.Analyzer("en")`
+## Analytics (Optional)
 
-### Analytics
-
-Create an analytics bucket shadowing the tracking couchbase bucket
+Create an analytics bucket shadowing the tracking couchbase bucket:
 
 `CREATE BUCKET trackingBucket WITH {"name":"tracking"};`
 
-Create a datasets from the "clickTrack" and "queryTrack" docs in the tracking bucket
+Create a datasets from the "clickTrack" and "queryTrack" docs in the tracking bucket:
 
 ```
 CREATE DATASET clickTrack ON trackingBucket WHERE ``type`` = "clickTrack";
@@ -127,7 +124,7 @@ Connect command will actually initiate the connection:
 
 `CONNECT BUCKET trackingBucket;`
 
-### Analytical Queries
+## Fun Analytical Queries
 
 Most popular products:
 
