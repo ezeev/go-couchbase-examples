@@ -12,7 +12,7 @@
 5. Start the best buy server
 6. Run the simulation
 
-Before beginning, get this repository:
+**Before beginning, go get this repository:**
 
 ```
 go get github.com/ezeev/go-couchbase-examples/bestbuy
