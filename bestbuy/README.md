@@ -17,7 +17,6 @@ Before beginning, get this repository:
 ```
 go get github.com/ezeev/go-couchbase-examples/bestbuy
 cd $GOPATH/src/github.com/ezeev/go-couchbase-examples/bestbuy
-EXPORT BBPATH=
 ```
 
 ### 1. Download the BestBuy Dataset
@@ -32,15 +31,29 @@ Download them to a location you will remember. Extract `product_data.tar.gz`.
 
 ### 2. Transform the Product Data
 
-The BestBuy product data is in XML (thanks, 2011). In `bestbuy/py` there is a script named `build_json.py`. This will read the XML and parse it into one, giant jsonl file (line delimited json documents). We will need this to lead the data later.
+The BestBuy product data is in XML (thanks, 2011). In `bestbuy/py` there is a script named `build_json.py`. This will read the XML and parse it into one, giant jsonl file (line delimited json documents). We will need this to load the data later.
 
 1. Edit `py/build_json.py`
-2. Towards the top, modify these 2 lines to point to where you extracted the product data:
+2. Towards the top, modify lines 22 and 23 to point to where you extracted the product data:
 
 ```
 xml_in_path = '/Users/evanpease/Development/datasets/product_data/products/*.xml'
 jsonl_out_path = '/Users/evanpease/Development/datasets/product_data.jsonl'
 ```
+### 3. Create the Buckets and FTS Indexes
+
+In Couchbase, create the following buckets using default setting and the following memory allocations:
+
+- `products` - 1 GB
+- `sessions` - 256 MB
+- `tracking` - 256 MB
+
+Setup the FTS indexes using the following screenshots:
+*(TODO: provide json FTS config w/ command line examples for FTS setup)*
+
+![](img/productsfts.png)
+
+
 
 
 # OLD README
