@@ -51,8 +51,14 @@ In Couchbase, create the following buckets using default setting and the followi
 Setup the FTS indexes using the following screenshots:
 *(TODO: provide json FTS config w/ command line examples for FTS setup)*
 
+#### Products FTS (productsfts)
+
 ![](img/productsfts.png)
 
+
+#### Clicks FTS (clicksfts)
+
+![](img/clicksfts.png)
 
 
 
