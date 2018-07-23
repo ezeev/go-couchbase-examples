@@ -1,4 +1,4 @@
-# Best Buy Example Setup Steps
+# Best Buy Demo Setup Steps
 
 **WORK IN PROGRESS**
 
