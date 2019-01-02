@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package model;
+
+//user,sku,category,query,click_time,query_time
+message Signal {
+  string user_id = 1;
+  string doc_id = 2;
+  string cat_id = 3;
+  string query = 4;
+  int64 click_time = 5;
+}
+
+message QueryDocSignalHourly {
+  string doc_id = 1;
+  string query = 2;
+  int32 epoch_hour = 3;
+  int32 count = 4;
+}
+
+message QueryCatSignalHourly {
+  string cat_id = 1;
+  string query = 2;
+  int32 epoch_hour = 3;
+  int32 count = 4;
+}

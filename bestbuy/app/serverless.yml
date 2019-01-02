@@ -1,0 +1,69 @@
+
+
+service: app # NOTE: update this with your service name
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+frameworkVersion: ">=1.28.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: go1.x
+  stage: dev
+  region: us-west-2
+  environment:
+    SIGNAL_STREAM: signals
+    AZ: us-west-2
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - kinesis:GetRecords
+        - kinesis:GetShardIterator
+        - kinesis:PutRecord
+        - kinesis:PutRecords
+        - kinesis:DescribeStream
+        - kinesis:ListStreams
+        - logs:CreateLogGroup
+        - logs:CreateLogStream
+        - logs:PutLogEvents
+      Resource:
+        - Fn::GetAtt:
+          - SignalStream
+          - Arn  
+
+package:
+ exclude:
+   - ./**
+ include:
+   - ./bin/**
+
+functions:
+  hello:
+    handler: bin/hello
+    events:
+      - http:
+          path: hello
+          method: get
+  world:
+    handler: bin/world
+    events:
+      - http:
+          path: world
+          method: get
+  signal:
+    handler: bin/signal
+    events:
+      - http:
+          path: signal
+          method: put
+          cors: true    
+
+resources:
+  Resources:
+    SignalStream:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        ShardCount: 1
+        Name: signals

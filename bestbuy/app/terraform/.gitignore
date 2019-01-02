@@ -1,0 +1,3 @@
+*.pem
+lambdas/bin/*
+.terraform/*
